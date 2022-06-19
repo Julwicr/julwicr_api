@@ -1,0 +1,2 @@
+class LongestWord < ApplicationRecord
+end
