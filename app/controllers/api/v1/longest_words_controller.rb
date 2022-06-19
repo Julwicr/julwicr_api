@@ -2,7 +2,7 @@ class Api::V1::LongestWordsController < ApplicationController
   before_action :set_longest_word, only: %i[show update destroy]
 
   def index
-    @longest_words = LongestWord.all
+    @longest_words = LongestWord.all.reverse
 
     render json: @longest_words
   end
@@ -28,8 +28,9 @@ class Api::V1::LongestWordsController < ApplicationController
   end
   # Only allow a list of trusted parameters through.
   def longest_word_params
-    params.require(:longest_word).permit(:answer, :result, :player, :answer_start, :answer_end, :score)
+    params.require(:longest_word).permit(:answer, :player, :answer_start, :answer_end)
   end
+
   def part_of_grid(input, letters)
     array_of_letters = input.upcase.chars
     array_of_letters.all? do |letter|
@@ -39,6 +40,7 @@ class Api::V1::LongestWordsController < ApplicationController
       letters.delete_at(index)
     end
   end
+
   def score
     attempt = params[:input]
     attempt_serialized = URI.open("https://wagon-dictionary.herokuapp.com/#{attempt}").read
