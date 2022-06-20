@@ -4,8 +4,8 @@ class CreateLongestWords < ActiveRecord::Migration[7.0]
       t.string :answer
       t.string :result
       t.string :player
-      t.date :answer_start
-      t.date :answer_end
+      t.string :grid
+      t.integer :time
       t.integer :score
 
       t.timestamps
