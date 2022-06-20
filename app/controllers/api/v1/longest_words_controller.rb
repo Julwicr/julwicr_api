@@ -21,8 +21,6 @@ class Api::V1::LongestWordsController < ApplicationController
   end
 
   def create
-    # p longest_word_params["grid"]
-    # p longest_word_params
     @longest_word = LongestWord.new(longest_word_params)
     result = score(longest_word_params["grid"], longest_word_params["answer"], longest_word_params["time"])
     @longest_word.result = result[:message]
@@ -32,6 +30,11 @@ class Api::V1::LongestWordsController < ApplicationController
     else
       render json: @longest_word.errors, status: :unprocessable_entity
     end
+  end
+
+  def top
+    top_longest_words = LongestWord.order(score: :desc).limit(5)
+    render json: top_longest_words
   end
 
   private
@@ -45,15 +48,16 @@ class Api::V1::LongestWordsController < ApplicationController
   end
 
   def score(grid, answer, time)
+    time.round(0)
     answer_serialized = URI.open("https://wagon-dictionary.herokuapp.com/#{answer}").read
     answer_json = JSON.parse(answer_serialized)
     result = {}
     if answer_json['found'] && part_of_grid(answer, grid)
-      result[:score] = answer.size * 50 + time / 1000
+      result[:score] = answer.size * 40 - time / 1000
       result[:message] = "You got one here !"
     elsif part_of_grid(answer, grid) && !(answer_json['found'])
       result[:message] = "Your word is not english. Désolé."
-      result[:score] = 0
+      result[:score] = 1
     else
       result[:message] = "Some letters are not part of the grid !"
       result[:score] = 0
