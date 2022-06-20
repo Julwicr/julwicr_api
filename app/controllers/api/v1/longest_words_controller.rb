@@ -35,11 +35,10 @@ class Api::V1::LongestWordsController < ApplicationController
   end
 
   private
-  # Use callbacks to share common setup or constraints between actions.
+
   def set_longest_word
     @longest_word = LongestWord.find(params[:id])
   end
-  # Only allow a list of trusted parameters through.
 
   def longest_word_params
     params.require(:longest_word).permit(:answer, :player, :time, grid: [])
