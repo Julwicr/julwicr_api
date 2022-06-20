@@ -18,8 +18,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_19_122347) do
     t.string "answer"
     t.string "result"
     t.string "player"
-    t.date "answer_start"
-    t.date "answer_end"
+    t.string "grid"
+    t.integer "time"
     t.integer "score"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
