@@ -53,7 +53,7 @@ class Api::V1::LongestWordsController < ApplicationController
     answer_json = JSON.parse(answer_serialized)
     result = {}
     if answer_json['found'] && part_of_grid(answer, grid)
-      result[:score] = answer.size * 40 - time / 1000
+      result[:score] = (answer.size * 40) + (60 - time / 1000)
       result[:message] = "You got one here !"
     elsif part_of_grid(answer, grid) && !(answer_json['found'])
       result[:message] = "Your word is not english. Désolé."
