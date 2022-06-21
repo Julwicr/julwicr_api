@@ -22,7 +22,9 @@ class Api::V1::LongestWordsController < ApplicationController
 
   def create
     @longest_word = LongestWord.new(longest_word_params)
-    result = score(longest_word_params["grid"], longest_word_params["answer"], longest_word_params["time"])
+    result = score(longest_word_params["grid"],
+                   longest_word_params["answer"],
+                   longest_word_params["time"].is_a?(Numeric) ? longest_word_params["time"] : 60_000)
     @longest_word.result = result[:message]
     @longest_word.score = result[:score]
     if @longest_word.save
