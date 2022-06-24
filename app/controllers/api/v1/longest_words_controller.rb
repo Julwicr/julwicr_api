@@ -1,4 +1,5 @@
-require 'open-uri'
+require 'uri'
+require 'net/http'
 require 'json'
 
 class Api::V1::LongestWordsController < ApplicationController
@@ -51,13 +52,19 @@ class Api::V1::LongestWordsController < ApplicationController
 
   def score(grid, answer, time)
     time.round(0)
-    answer_serialized = URI.open("https://wagon-dictionary.herokuapp.com/#{answer}").read
-    answer_json = JSON.parse(answer_serialized)
+    answer.downcase!
+    uri = URI("https://api.dictionaryapi.dev/api/v2/entries/en/#{answer}")
+    response = Net::HTTP.get_response(uri)
+    json_response = JSON.parse(response.body)[0]
+    p '** ** ** ** **'
+    p json_response
+    p response.is_a?(Net::HTTPSuccess)
+    p ' __ __ __ __ __'
     result = {}
-    if answer_json['found'] && part_of_grid(answer, grid)
+    if response.is_a?(Net::HTTPSuccess) && part_of_grid(answer, grid)
       result[:score] = (answer.size * 40) + (60 - time / 1000)
       result[:message] = "You got one here !"
-    elsif part_of_grid(answer, grid) && !(answer_json['found'])
+    elsif !response.is_a?(Net::HTTPSuccess) && part_of_grid(answer, grid)
       result[:message] = "Your word is not english. Désolé."
       result[:score] = 1
     else
