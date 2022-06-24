@@ -56,14 +56,12 @@ class Api::V1::LongestWordsController < ApplicationController
     uri = URI("https://api.dictionaryapi.dev/api/v2/entries/en/#{answer}")
     response = Net::HTTP.get_response(uri)
     json_response = JSON.parse(response.body)[0]
-    p '** ** ** ** **'
-    p json_response
-    p response.is_a?(Net::HTTPSuccess)
-    p ' __ __ __ __ __'
     result = {}
     if response.is_a?(Net::HTTPSuccess) && part_of_grid(answer, grid)
+      p time
       result[:score] = (answer.size * 40) + (60 - time / 1000)
       result[:message] = "You got one here !"
+      result[:definition] = json_response["meanings"][0]["definitions"][0]["definition"]
     elsif !response.is_a?(Net::HTTPSuccess) && part_of_grid(answer, grid)
       result[:message] = "Your word is not english. Désolé."
       result[:score] = 1
